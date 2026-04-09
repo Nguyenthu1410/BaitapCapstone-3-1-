@@ -21,6 +21,7 @@ const MainLayout = () => {
 
         {/* Hệ thống rạp và lịch chiếu */}
         <CinemaComplex />
+        
       </main>
 
       {/* Footer */}

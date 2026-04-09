@@ -63,14 +63,11 @@ const Header = () => {
                   danger
                   className="w-full"
                   onClick={() => {
-                    // xóa thông tin user trong redux store
                     dispatch(authActions.clearCredentials());
 
-                    // xóa thông tin user trong localStorage
                     localStorage.removeItem(LOCAL_STORAGE_KEYS.USER_INFO);
                     localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
 
-                    // điều hướng về trang chủ
                     navigate(PUBLIC_PATH.HOME);
                   }}
                 >
