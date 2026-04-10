@@ -3,7 +3,7 @@ import { Tabs, Card, Tag } from 'antd';
 import { EnvironmentOutlined } from '@ant-design/icons';
 import { cinemaService } from '../services/cinemaService';
 
-const RapChieuPhim = () => {
+const CinemaPage = () => {
   const [systems, setSystems] = useState([]);
   const [clusters, setClusters] = useState([]);
 
@@ -50,4 +50,4 @@ const RapChieuPhim = () => {
   );
 };
 
-export default RapChieuPhim;
+export default CinemaPage;
