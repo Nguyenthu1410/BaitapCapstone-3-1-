@@ -1,7 +1,6 @@
 import { Button, Tag } from "antd";
 import { PlayCircleOutlined, StarFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router";
-import { PUBLIC_PATH } from "../../constant";
 
 const MovieItem = ({ movie }) => {
   const navigate = useNavigate();
@@ -52,6 +51,7 @@ const MovieItem = ({ movie }) => {
             danger
             type="primary"
             className="h-10 font-bold tracking-wider"
+            onClick={() => navigate(`/checkout/${movie.maPhim}`)}
           >
             MUA VÉ
           </Button>

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Spin, Rate } from 'antd';
-import useMovieDetail from '../hooks/useMovieDetail';
+import { Progress, Rate, Tabs, Spin } from 'antd';
+import { useMovieDetail } from '../hooks/useMovieDetail';
+import dayjs from 'dayjs';
 
 const MovieDetail = () => {
   const { detail, loading } = useMovieDetail();
@@ -14,45 +15,110 @@ const MovieDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white py-20 px-4">
-      <div className="container mx-auto flex flex-col md:flex-row gap-10">
-        <div className="w-full md:w-1/3 lg:w-1/4">
-          <img 
-            src={detail?.hinhAnh} 
-            alt={detail?.tenPhim} 
-            className="w-full rounded-xl shadow-2xl border border-slate-800"
-            onError={(e) => { e.target.src = "https://via.placeholder.com/300x450?text=No+Image"; }}
-          />
-        </div>
+    <div className="bg-slate-950 min-h-screen text-white">
+      {/* 1. Phần Banner trên cùng với nền mờ */}
+      <div className="relative h-[600px] flex items-center justify-center overflow-hidden">
+        {/* Lớp nền mờ phía sau */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center blur-2xl opacity-30 scale-110"
+          style={{ backgroundImage: `url(${detail?.hinhAnh})` }}
+        ></div>
+        {/* Lớp phủ đen gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent"></div>
 
-        <div className="w-full md:w-2/3 lg:w-3/4">
-          <h1 className="text-4xl font-bold mb-4 uppercase text-orange-500">
-            {detail?.tenPhim}
-          </h1>
-          
-          <div className="flex items-center gap-4 mb-6 text-xl">
-             <Rate disabled defaultValue={detail?.danhGia / 2} allowHalf className="text-orange-500" />
-             <span className="text-gray-400">({detail?.danhGia}/10)</span>
-          </div>
-
-          <div className="space-y-4">
-            <p className="text-lg">
-              <span className="text-orange-500 font-bold">Ngày chiếu:</span>{" "}
-              {new Date(detail?.ngayKhoiChieu).toLocaleDateString()}
-            </p>
-            <div className="bg-slate-900/50 p-6 rounded-lg border border-slate-800">
-              <p className="font-bold mb-2 text-white text-lg">Nội dung phim:</p>
-              <p className="text-gray-400 leading-relaxed text-justify">
-                {detail?.moTa || "Đang cập nhật nội dung..."}
-              </p>
+        {/* 2. Nội dung chính nằm giữa banner */}
+        <div className="relative z-10 container mx-auto px-4 flex flex-col md:flex-row items-center gap-10">
+          {/* Poster phim bên trái */}
+          <div className="relative group w-[220px] h-[320px] flex-shrink-0">
+            <img 
+              src={detail?.hinhAnh} 
+              alt={detail?.tenPhim} 
+              className="w-full h-full object-cover rounded shadow-2xl border border-gray-700"
+            />
+            <div className="absolute top-2 left-2 bg-orange-600 text-white text-xs font-bold px-1 rounded">C18</div>
+            {/* Nút Play Trailer giả lập */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 cursor-pointer">
+              <div className="w-16 h-16 border-2 border-white rounded-full flex items-center justify-center">
+                <span className="text-white text-2xl ml-1">▶</span>
+              </div>
             </div>
           </div>
 
-          <button className="mt-8 bg-orange-600 hover:bg-orange-700 text-white px-12 py-4 rounded-full font-bold transition-all shadow-lg hover:shadow-orange-500/20 active:scale-95">
-            ĐẶT VÉ NGAY
-          </button>
+          {/* Thông tin phim ở giữa */}
+          <div className="flex-grow text-center md:text-left">
+            <p className="text-sm text-gray-400 mb-1">{dayjs(detail?.ngayKhoiChieu).format('DD.MM.YYYY')}</p>
+            <h1 className="text-3xl font-bold mb-3 uppercase tracking-wider">
+              <span className="bg-orange-500 text-white text-xs px-1 rounded mr-2 align-middle">P</span>
+              {detail?.tenPhim}
+            </h1>
+            <p className="text-sm text-gray-400 mb-6">120 phút - 0 IMDb - 2D/Digital</p>
+            
+            <button className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded font-bold transition-all shadow-lg active:scale-95">
+              MUA VÉ
+            </button>
+          </div>
+
+          {/* Vòng tròn đánh giá bên phải */}
+          <div className="hidden lg:flex flex-col items-center gap-2">
+            <div className="relative">
+              <Progress 
+                type="circle" 
+                percent={detail?.danhGia * 10} 
+                format={() => <span className="text-white font-bold text-2xl">{detail?.danhGia}</span>}
+                strokeColor={{ '0%': '#108ee9', '100%': '#87d068' }}
+                strokeWidth={8}
+                size={120}
+              />
+            </div>
+            <Rate disabled defaultValue={detail?.danhGia / 2} allowHalf className="text-orange-500 text-sm" />
+            <p className="text-xs text-gray-400">10 người đánh giá</p>
+          </div>
         </div>
       </div>
+
+      {/* 3. Phần Tabs chi tiết bên dưới */}
+      <div className="container mx-auto px-4 -mt-10 relative z-20 pb-20">
+        <Tabs
+          defaultActiveKey="1"
+          centered
+          className="custom-movie-tabs"
+          items={[
+            {
+              label: <span className="text-xl font-bold uppercase px-4">Lịch chiếu</span>,
+              key: '1',
+              children: (
+                <div className="p-10 bg-white/5 rounded-lg border border-white/10 text-center text-gray-400">
+                  {/* Chỗ này sau này Thư sẽ render component CinemaComplex hoặc lịch chiếu cụ thể */}
+                  Hiện tại chưa có lịch chiếu cho bộ phim này.
+                </div>
+              ),
+            },
+            {
+              label: <span className="text-xl font-bold uppercase px-4">Thông tin</span>,
+              key: '2',
+              children: (
+                <div className="max-w-4xl mx-auto py-10">
+                   <h3 className="text-orange-500 font-bold mb-4">NỘI DUNG PHIM</h3>
+                   <p className="text-gray-300 leading-relaxed text-justify">{detail?.moTa}</p>
+                </div>
+              ),
+            },
+            {
+              label: <span className="text-xl font-bold uppercase px-4">Đánh giá</span>,
+              key: '3',
+              children: <div className="text-center py-20">Chưa có đánh giá nào.</div>,
+            },
+          ]}
+        />
+      </div>
+
+      {/* CSS tùy chỉnh cho Tabs antd */}
+      <style>{`
+        .custom-movie-tabs .ant-tabs-nav::before { border-bottom: none; }
+        .custom-movie-tabs .ant-tabs-tab { color: #94a3b8 !important; transition: all 0.3s; }
+        .custom-movie-tabs .ant-tabs-tab-active .ant-tabs-tab-btn { color: #f97316 !important; transform: scale(1.1); }
+        .custom-movie-tabs .ant-tabs-ink-bar { background: #f97316 !important; height: 3px !important; }
+      `}</style>
     </div>
   );
 };

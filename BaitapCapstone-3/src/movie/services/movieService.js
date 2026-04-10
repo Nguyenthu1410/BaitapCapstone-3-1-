@@ -20,12 +20,19 @@ export const movieService = {
     });
   },
 
-  getMoiveDetail: () => {
-    return axios.get(`${BASE_URL}/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=0`, {
+  getMovieDetail: (movieId) => {
+    return axios.get(`${BASE_URL}/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=${movieId}`, {
       headers: {
         TokenCybersoft: TOKEN,
-      }
-    })
-  }
+      },
+    });
+  },
 
+  getBookingMovie: () => {
+    return axios.get(`${BASE_URL}/QuanLyDatVe/LayDanhSachPhongVe?MaLichChieu=0`, {
+      headers: {
+        TokenCybersoft: TOKEN,
+      },
+    });
+  },
 };

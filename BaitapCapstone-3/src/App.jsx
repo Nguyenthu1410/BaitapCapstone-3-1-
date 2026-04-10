@@ -11,6 +11,7 @@ import PromotionPage from "./customer/Home/Components/PromotionPage";
 import AppPage from "./customer/Home/Components/AppPage";
 import SupportPage from "./customer/Home/Components/SupportPage";
 import MovieDetail from "./movie/components/MovieDetail";
+import BookingPage from "./movie/components/BookingPage";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path={PUBLIC_PATH.APP} element={<AppPage />}/>
         <Route path={PUBLIC_PATH.SUPPORT} element={<SupportPage />}/>
         <Route path={PUBLIC_PATH.MOVIE_DETAIL} element={<MovieDetail />}/>
+        <Route path={PUBLIC_PATH.BOOKING} element={<BookingPage />}/>
 
         <Route path="/register" />
         <Route path="/signIn" />

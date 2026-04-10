@@ -18,5 +18,6 @@ export const cinemaService = {
         TokenCybersoft: TOKEN,
       },       
     });
-  }
+  },
+
 };

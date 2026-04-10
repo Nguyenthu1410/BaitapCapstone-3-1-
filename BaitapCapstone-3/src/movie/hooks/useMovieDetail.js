@@ -2,9 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { movieService } from '../services/movieService';
 
-/**
- * Custom hook xử lý logic lấy chi tiết phim
- */
 export const useMovieDetail = () => {
   const { movieId } = useParams();
   const [detail, setDetail] = useState(null);
@@ -31,4 +28,4 @@ export const useMovieDetail = () => {
   return { detail, loading };
 };
 
-export default useMovieDetail
+export default useMovieDetail;

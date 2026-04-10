@@ -8,4 +8,5 @@ export const PUBLIC_PATH = {
     APP: '/ung-dung',
     SUPPORT:'/ho-tro',
     MOVIE_DETAIL: '/detail/:movieId',
+    BOOKING:'/checkout/:showtimeId',
 }
