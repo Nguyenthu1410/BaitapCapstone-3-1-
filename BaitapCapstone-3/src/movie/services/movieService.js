@@ -11,6 +11,7 @@ export const movieService = {
       },
     });
   },
+
   getBannerList: () => {
     return axios.get(`${BASE_URL}/QuanLyPhim/LayDanhSachBanner`, {
       headers: {
@@ -18,4 +19,13 @@ export const movieService = {
       },
     });
   },
+
+  getMoiveDetail: () => {
+    return axios.get(`${BASE_URL}/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=0`, {
+      headers: {
+        TokenCybersoft: TOKEN,
+      }
+    })
+  }
+
 };

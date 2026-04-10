@@ -7,4 +7,5 @@ export const PUBLIC_PATH = {
     PROMOTION:'/khuyen-mai',
     APP: '/ung-dung',
     SUPPORT:'/ho-tro',
+    MOVIE_DETAIL: '/detail/:movieId',
 }

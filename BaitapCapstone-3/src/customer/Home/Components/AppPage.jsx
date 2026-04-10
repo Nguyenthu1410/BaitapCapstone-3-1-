@@ -10,32 +10,34 @@ const AppPage = () => {
       android: "https://play.google.com/store/apps/details?id=vn.tix.app",
     },
     danhSachTinhNang: [
-    {
-      id: 1,
-      tieuDe: "Đặt vé siêu tốc",
-      chiTiet: "Chọn phim, chọn rạp và thanh toán chỉ trong 1 phút.",
-      icon: "⚡"
-    },
-    {
-      id: 2,
-      tieuDe: "Tích điểm thành viên",
-      chiTiet: "Tự động tích điểm và đổi quà trực tiếp trên ứng dụng.",
-      icon: "🎁"
-    },
-    {
-      id: 3,
-      tieuDe: "Nhắc lịch chiếu",
-      chiTiet: "Không bao giờ bỏ lỡ suất chiếu của bộ phim bạn yêu thích.",
-      icon: "🔔"
-    },
-    {
-      id: 4,
-      tieuDe: "Ưu đãi độc quyền",
-      chiTiet: "Hàng ngàn voucher giảm giá mỗi tuần dành riêng cho App.",
-      icon: "🔥"
-    }
-  ]
+      {
+        id: 1,
+        tieuDe: "Đặt vé siêu tốc",
+        chiTiet: "Chọn phim, chọn rạp và thanh toán chỉ trong 1 phút.",
+        icon: "⚡"
+      },
+      {
+        id: 2,
+        tieuDe: "Tích điểm thành viên",
+        chiTiet: "Tự động tích điểm và đổi quà trực tiếp trên ứng dụng.",
+        icon: "🎁"
+      },
+      {
+        id: 3,
+        tieuDe: "Nhắc lịch chiếu",
+        chiTiet: "Không bao giờ bỏ lỡ suất chiếu của bộ phim bạn yêu thích.",
+        icon: "🔔"
+      },
+      {
+        id: 4,
+        tieuDe: "Ưu đãi độc quyền",
+        chiTiet: "Hàng ngàn voucher giảm giá mỗi tuần dành riêng cho App.",
+        icon: "🔥"
+      }
+    ]
   }
+
+  const { tieuDe, moTaChinh, hinhAnhDienThoai, linkTai, danhSachTinhNang } = appData;
 
   return (
    <div className="bg-slate-950 min-h-screen py-20 px-4">
@@ -43,8 +45,8 @@ const AppPage = () => {
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
           
           <div className="lg:w-1/2 text-white">
-            <h2 className="text-4xl font-extrabold mb-6 leading-tight uppercase">
-              {tenUngDung}
+            <h2 className="text-4xl font-extrabold mb-6 leading-tight uppercase text-orange-500">
+              {tieuDe}
             </h2>
             <p className="text-gray-400 text-lg mb-8 italic">
               "{moTaChinh}"
@@ -62,7 +64,6 @@ const AppPage = () => {
               ))}
             </div>
 
-            {/* Nút tải App dùng link từ dữ liệu giả */}
             <div className="flex flex-wrap gap-4">
               <a 
                 href={linkTai.ios} 
@@ -70,7 +71,7 @@ const AppPage = () => {
                 rel="noreferrer"
                 className="bg-white text-black px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-gray-200 transition-all"
               >
-                <i className="fab fa-apple text-xl"></i> App Store
+                App Store
               </a>
               <a 
                 href={linkTai.android} 
@@ -78,14 +79,12 @@ const AppPage = () => {
                 rel="noreferrer"
                 className="border border-white text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-white hover:text-black transition-all"
               >
-                <i className="fab fa-google-play text-xl"></i> Play Store
+                CH Play Store
               </a>
             </div>
           </div>
 
-          {/* Cột Phải: Hình ảnh Mockup điện thoại */}
           <div className="lg:w-1/2 flex justify-center relative">
-            {/* Hiệu ứng phát sáng phía sau */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-orange-600/10 blur-[120px] rounded-full"></div>
             
             <div className="relative w-[300px] h-[600px] border-[10px] border-slate-800 rounded-[3rem] overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]">
