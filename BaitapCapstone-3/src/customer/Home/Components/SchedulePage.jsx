@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Tabs, Tag } from 'antd';
 import dayjs from 'dayjs';
-import { cinemaService } from '../services/cinemaService';
+import { cinemaService } from '../../../movie/services/cinemaService';
 
 const SchedulePage = () => {
   const [systems, setSystems] = useState([]);

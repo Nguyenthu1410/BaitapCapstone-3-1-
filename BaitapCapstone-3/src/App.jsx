@@ -1,23 +1,23 @@
 import reactLogo from "./assets/react.svg";
 import viteLogo from "./assets/vite.svg";
 import heroImg from "./assets/hero.png";
-import { Outlet, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 import MainLayout from "./customer/Home/Components/MainLayout";
 import { PUBLIC_PATH } from "./constant";
-import SchedulePage from "./movie/components/SchedulePage";
-import CinemaPage from "./movie/components/CinemaPage";
+import SchedulePage from "./customer/Home/Components/SchedulePage";
+import CinemaPage from "./customer/Home/Components/CinemaPage";
 import HomePage from "./customer/Home/Components/HomePage";
+import PromotionPage from "./customer/Home/Components/PromotionPage";
+import AppPage from "./customer/Home/Components/AppPage";
 
 function App() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
-      <Outlet />
-      
         <Route
           path={PUBLIC_PATH.HOME}
           element={
-            <h1 className="h-[3000px]">
+            <h1>
               <HomePage />
             </h1>
           }
@@ -25,6 +25,8 @@ function App() {
 
         <Route path={PUBLIC_PATH.SCHEDULE} element={<SchedulePage />} />
         <Route path={PUBLIC_PATH.CINEMA} element={<CinemaPage />} />
+        <Route path={PUBLIC_PATH.PROMOTION} element={<PromotionPage />}/>
+        <Route path={PUBLIC_PATH.APP} element={<AppPage />}/>
 
         <Route path="/register" />
         <Route path="/signIn" />

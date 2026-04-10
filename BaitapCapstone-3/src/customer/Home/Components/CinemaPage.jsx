@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Tabs, Card, Tag } from 'antd';
 import { EnvironmentOutlined } from '@ant-design/icons';
-import { cinemaService } from '../services/cinemaService';
+import { cinemaService } from '../../../movie/services/cinemaService';
 
 const CinemaPage = () => {
   const [systems, setSystems] = useState([]);

@@ -19,14 +19,12 @@ const Header = () => {
     >
       <div className="container mx-auto flex items-center justify-between h-full">
         <h1 className="text-4xl text-white font-semibold pl-8">
-          <Link
-            to={PUBLIC_PATH.HOME}
-            className="text-3xl font-black text-white flex gap-2"
-          >
+          <p className="text-3xl font-black text-white flex gap-2">
             <span className="text-orange-500">MOVIE</span>STARS
-          </Link>
+          </p>
         </h1>
         <nav className="space-x-5 text-white">
+          <NavLink to={PUBLIC_PATH.HOME}>Trang chủ</NavLink>
           <NavLink to={PUBLIC_PATH.SCHEDULE}>Lịch Chiếu</NavLink>
           <NavLink to={PUBLIC_PATH.CINEMA}>Rạp Chiếu</NavLink>
           <NavLink to={PUBLIC_PATH.PROMOTION}>Khuyến Mãi</NavLink>
