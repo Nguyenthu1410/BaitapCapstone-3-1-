@@ -1,11 +1,11 @@
 import React from 'react';
-import { Button, Divider, Spin } from 'antd';
+import { Button, Divider } from 'antd';
 import useBooking from '../hooks/useBooking';
 
 const BookingPage = () => {
   const { seatList, selectedSeats, loading, totalPrice, handleSelectSeat } = useBooking();
 
-  if (loading) return <div className="h-screen bg-slate-950 flex items-center justify-center"><Spin size="large" /></div>;
+  if (loading) return <div className="text-white">Đang tải phòng vé...</div>;
 
   return (
     <div className="min-h-screen bg-slate-950 text-white py-10 px-4">

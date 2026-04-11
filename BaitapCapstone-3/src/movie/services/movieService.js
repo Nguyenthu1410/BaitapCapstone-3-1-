@@ -28,8 +28,8 @@ export const movieService = {
     });
   },
 
-  getBookingMovie: () => {
-    return axios.get(`${BASE_URL}/QuanLyDatVe/LayDanhSachPhongVe?MaLichChieu=0`, {
+  getBookingMovie: (showtimeId) => {
+    return axios.get(`${BASE_URL}/QuanLyDatVe/LayDanhSachPhongVe?MaLichChieu=${showtimeId}`, {
       headers: {
         TokenCybersoft: TOKEN,
       },

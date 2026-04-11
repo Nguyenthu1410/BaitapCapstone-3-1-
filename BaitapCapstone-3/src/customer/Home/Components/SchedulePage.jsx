@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Tabs, Tag } from 'antd';
 import dayjs from 'dayjs';
 import { cinemaService } from '../../../movie/services/cinemaService';
+import { useNavigate } from 'react-router';
 
 const SchedulePage = () => {
+  const navigate = useNavigate();
   const [systems, setSystems] = useState([]);
   const [data, setData] = useState([]);
 
@@ -43,7 +45,6 @@ const SchedulePage = () => {
                   label: (
                     <div className="w-64 text-left p-3 border-b border-gray-100 group">
                       <div className="flex gap-3 items-center">
-                        {/* Ảnh đại diện rạp (có thể dùng logo hệ thống nếu API không có ảnh rạp riêng) */}
                         <img src={sys.logo} className="w-10 h-10 rounded shadow-sm opacity-70 group-hover:opacity-100" alt="theater" />
                         <div className="overflow-hidden">
                           <p className="text-sm font-bold text-gray-800 truncate leading-tight uppercase">
@@ -70,7 +71,6 @@ const SchedulePage = () => {
                             <div className="absolute top-1 left-1 bg-orange-600 text-white text-[10px] font-bold px-1 rounded">C18</div>
                           </div>
 
-                          {/* Thông tin và lịch chiếu bên phải */}
                           <div className="flex-grow">
                             <div className="mb-4">
                               <h4 className="text-lg font-bold text-slate-900 leading-tight">
@@ -80,11 +80,11 @@ const SchedulePage = () => {
                               <p className="text-xs text-gray-400 mt-1 italic">120 phút - TIX 8.5 - IMDb 0</p>
                             </div>
 
-                            {/* Lưới hiển thị giờ chiếu màu xanh giống trong ảnh mẫu */}
                             <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
                               {phim.lstLichChieuTheoPhim.slice(0, 12).map((l) => (
                                 <div 
                                   key={l.maLichChieu} 
+                                  onClick={() => navigate(`/checkout/${l.maLichChieu}`)} 
                                   className="text-center py-2 px-1 border border-gray-100 bg-gray-50 rounded hover:border-green-500 group transition-all cursor-pointer"
                                 >
                                   <span className="text-green-600 font-bold text-base group-hover:text-green-700">
