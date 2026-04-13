@@ -21,7 +21,7 @@ export const movieService = {
   },
 
   getMovieDetail: (movieId) => {
-    return axios.get(`${BASE_URL}/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=${movieId}`, {
+    return axios.get(`${BASE_URL}/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=1283`, {
       headers: {
         TokenCybersoft: TOKEN,
       },
@@ -29,7 +29,7 @@ export const movieService = {
   },
 
   getBookingMovie: (showtimeId) => {
-    return axios.get(`${BASE_URL}/QuanLyDatVe/LayDanhSachPhongVe?MaLichChieu=${showtimeId}`, {
+    return axios.get(`${BASE_URL}/QuanLyDatVe/LayDanhSachPhongVe?MaLichChieu=47818`, {
       headers: {
         TokenCybersoft: TOKEN,
       },

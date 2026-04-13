@@ -5,16 +5,19 @@ import { movieService } from '../services/movieService';
 export const useBooking = () => {
   const { showtimeId } = useParams();
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [seatList, setSeatList] = useState([]);
+  const [seatList, setSeatList] = useState([]); // Chứa danh sách ghế (mảng)
+  const [movieInfo, setMovieInfo] = useState(null); // Chứa thông tin phim/rạp
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSeats = async () => {
       try {
         setLoading(true);
-        // showtimeId từ URL sẽ được truyền vào đây
         const res = await movieService.getBookingMovie(showtimeId);
-        setSeatList(res.data.content);
+        
+        const { thongTinPhim, danhSachGhe } = res.data.content;
+        setSeatList(danhSachGhe); 
+        setMovieInfo(thongTinPhim); 
       } catch (error) {
         console.error("Lỗi lấy vé phim:", error);       
       } finally {
@@ -34,12 +37,12 @@ export const useBooking = () => {
     }
   };
 
-  // Tính tổng tiền dựa trên danh sách ghế đã chọn
   const totalPrice = selectedSeats.reduce((total, seat) => total + seat.giaVe, 0);
 
   return {
     seatList,
     selectedSeats,
+    movieInfo, 
     loading,
     totalPrice,
     handleSelectSeat
