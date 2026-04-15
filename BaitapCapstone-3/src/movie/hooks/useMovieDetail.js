@@ -1,9 +1,8 @@
+// src/movie/hooks/useMovieDetail.js
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
 import { movieService } from '../services/movieService';
 
 export const useMovieDetail = () => {
-  const { movieId } = useParams();
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -11,7 +10,8 @@ export const useMovieDetail = () => {
     const fetchDetail = async () => {
       try {
         setLoading(true);
-        const res = await movieService.getMovieDetail(movieId);
+        // Gọi service không cần truyền movieId
+        const res = await movieService.getMovieDetail(); 
         setDetail(res.data.content);
       } catch (error) {
         console.error("Lỗi lấy chi tiết phim:", error);
@@ -20,10 +20,8 @@ export const useMovieDetail = () => {
       }
     };
 
-    if (movieId) {
-      fetchDetail();
-    }
-  }, [movieId]);
+    fetchDetail();
+  }, []); 
 
   return { detail, loading };
 };
