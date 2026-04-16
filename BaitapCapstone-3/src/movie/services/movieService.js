@@ -20,7 +20,7 @@ export const movieService = {
     });
   },
 
-  getMovieDetail: (movieId) => {
+  getMovieSchedule: (movieId) => {
     return axios.get(`${BASE_URL}/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=1283`, {
       headers: {
         TokenCybersoft: TOKEN,
@@ -28,6 +28,13 @@ export const movieService = {
     });
   },
 
+  getMovieDetail: (movieId) => {
+    return axios.get(`${BASE_URL}/QuanLyPhim/LayThongTinPhim?MaPhim=1283`, {
+      headers: {
+        TokenCybersoft: TOKEN,
+      },
+    });
+  },
   getBookingMovie: (showtimeId) => {
     return axios.get(`${BASE_URL}/QuanLyDatVe/LayDanhSachPhongVe?MaLichChieu=47818`, {
       headers: {

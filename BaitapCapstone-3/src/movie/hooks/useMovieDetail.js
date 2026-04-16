@@ -10,8 +10,7 @@ export const useMovieDetail = () => {
     const fetchDetail = async () => {
       try {
         setLoading(true);
-        // Gọi service không cần truyền movieId
-        const res = await movieService.getMovieDetail(); 
+        const res = await movieService.getMovieSchedule(); 
         setDetail(res.data.content);
       } catch (error) {
         console.error("Lỗi lấy chi tiết phim:", error);

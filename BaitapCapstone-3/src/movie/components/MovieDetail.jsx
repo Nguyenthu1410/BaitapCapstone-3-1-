@@ -1,100 +1,109 @@
+// src/movie/components/MovieDetail.jsx
 import React from "react";
-import { useNavigate, useParams} from 'react-router'
-import { Rate } from "antd";
+import { Progress, Rate, Tabs, Spin } from "antd";
+import { useMovieDetail } from "../hooks/useMovieDetail";
 import dayjs from "dayjs";
-import useMovieDetail from "../hooks/useMovieDetail";
+import { useNavigate } from "react-router";
 
 const MovieDetail = () => {
-  const { movieId } = useParams();
-  const { data: movie, isLoading } = useMovieDetail();
-  const navigate = useNavigate() ;
+  const { detail, loading } = useMovieDetail();
+  const navigate = useNavigate();
 
-  if (isLoading) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="text-white text-xl animate-pulse">Đang tải thông tin phim...</div>
+      <div className="h-screen flex items-center justify-center bg-slate-950">
+        <Spin size="large" tip="Đang tải dữ liệu..." />
       </div>
     );
   }
 
-  if (!movie) {
-    return (
-      <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center">
-        Không tìm thấy thông tin phim.
+  // Hàm render danh sách lịch chiếu từ API
+  const renderLichChieu = () => {
+    if (!detail?.heThongRapChieu || detail.heThongRapChieu.length === 0) {
+      return <div className="text-center py-10 text-gray-400">Hiện tại chưa có lịch chiếu.</div>;
+    }
+
+    return detail.heThongRapChieu.map((heThong) => (
+      <div key={heThong.maHeThongRap} className="mb-8 bg-white/5 p-4 rounded-lg">
+        <div className="flex items-center gap-3 mb-6 border-b border-white/10 pb-3">
+          <img src={heThong.logo} alt="logo" className="w-12 h-12" />
+          <h2 className="text-xl font-bold text-orange-500 uppercase">{heThong.tenHeThongRap}</h2>
+        </div>
+
+        {heThong.cumRapChieu.map((cumRap) => (
+          <div key={cumRap.maCumRap} className="mb-6 last:mb-0 ml-4">
+            <h3 className="text-white font-semibold text-lg mb-3">{cumRap.tenCumRap}</h3>
+            <div className="flex flex-wrap gap-4">
+              {cumRap.lichChieuPhim.map((lich) => (
+                <button
+                  key={lich.maLichChieu}
+                  onClick={() => navigate(`/checkout/${lich.maLichChieu}`)}
+                  className="bg-slate-800 hover:bg-orange-600 hover:text-white transition-all px-4 py-2 rounded border border-white/10 text-sm font-medium"
+                >
+                  <span className="text-orange-400 group-hover:text-white">
+                    {dayjs(lich.ngayChieuGioChieu).format("HH:mm")}
+                  </span>
+                  <span className="mx-1">|</span>
+                  <span>{dayjs(lich.ngayChieuGioChieu).format("DD/MM")}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
-    );
-  }
+    ));
+  };
 
   return (
-    <div className="relative min-h-screen bg-[#0a0a0a] text-white">
-      {/* Background mờ */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 blur-md"
-        style={{ backgroundImage: `url(${movie?.hinhAnh})` }}
-      ></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-black"></div>
+    <div className="bg-slate-950 min-h-screen text-white">
+      {/* Phần Banner phía trên giữ nguyên theo cấu trúc của bạn */}
+      <div className="relative h-[550px] flex items-center justify-center overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center blur-2xl opacity-30 scale-110"
+          style={{ backgroundImage: `url(${detail?.hinhAnh})` }}
+        ></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent"></div>
 
-      {/* Nội dung chính */}
-      <div className="relative z-10 container mx-auto px-4 py-20">
-        <div className="flex flex-col md:flex-row gap-10 items-center md:items-start">
-          
-          {/* Poster */}
-          <div className="w-64 md:w-80 flex-shrink-0 shadow-2xl rounded-lg overflow-hidden border border-gray-800">
-            <img 
-              src={movie?.hinhAnh} 
-              alt={movie?.tenPhim} 
-              className="w-full h-[450px] object-cover"
-            />
+        <div className="relative z-10 container mx-auto px-4 flex flex-col md:flex-row items-center gap-10">
+          <img src={detail?.hinhAnh} alt={detail?.tenPhim} className="w-[220px] h-[320px] object-cover rounded shadow-2xl border border-gray-700" />
+          <div className="text-center md:text-left">
+            <h1 className="text-4xl font-bold mb-4 uppercase">{detail?.tenPhim}</h1>
+            <p className="text-gray-400 mb-6">{dayjs(detail?.ngayKhoiChieu).format("DD.MM.YYYY")} - 120 phút</p>
+            <button className="bg-red-600 hover:bg-red-700 px-10 py-3 rounded font-bold shadow-lg">MUA VÉ</button>
           </div>
-
-          {/* Thông tin phim */}
-          <div className="flex-1 space-y-6 text-center md:text-left">
-            <div>
-              <p className="text-red-500 font-semibold mb-2 uppercase tracking-widest">
-                {/* Sửa lỗi format ngày tại đây */}
-                {movie?.ngayKhoiChieu ? dayjs(movie.ngayKhoiChieu).format("DD.MM.YYYY") : "Sắp chiếu"}
-              </p>
-              <h1 className="text-4xl md:text-6xl font-extrabold uppercase mb-4">
-                {movie?.tenPhim}
-              </h1>
-            </div>
-
-            <div className="flex items-center justify-center md:justify-start gap-4">
-              <Rate disabled allowHalf value={(movie?.danhGia || 0) / 2} />
-              <span className="text-yellow-500 font-bold text-2xl">
-                {movie?.danhGia}/10
-              </span>
-            </div>
-
-            <p className="text-gray-300 leading-relaxed max-w-2xl text-lg italic">
-              {movie?.moTa || "Mô tả đang được cập nhật..."}
-            </p>
-
-            <div className="pt-6">
-              <button 
-                onClick={() => {
-                  const element = document.getElementById('lich-chieu');
-                  element?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="bg-red-600 hover:bg-red-700 text-white px-12 py-4 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(220,38,38,0.5)]"
-              >
-                MUA VÉ NGAY
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Anchor cho phần lịch chiếu */}
-        <div id="lich-chieu" className="mt-32">
-            <h2 className="text-3xl font-bold mb-10 border-l-8 border-red-600 pl-6 uppercase">
-                Lịch Chiếu
-            </h2>
-            <div className="bg-white/5 backdrop-blur-md p-6 rounded-xl border border-white/10 min-h-[400px]">
-                {/* Chèn component lịch chiếu của bạn ở đây */}
-                <p className="text-center text-gray-400">Hệ thống lịch chiếu đang tải...</p>
-            </div>
         </div>
       </div>
+
+      <div className="container mx-auto px-4 -mt-10 relative z-20 pb-20">
+        <Tabs
+          defaultActiveKey="1"
+          centered
+          className="custom-movie-tabs"
+          items={[
+            {
+              label: <span className="text-xl font-bold uppercase px-6">Lịch chiếu</span>,
+              key: "1",
+              children: <div className="max-w-5xl mx-auto">{renderLichChieu()}</div>,
+            },
+            {
+              label: <span className="text-xl font-bold uppercase px-6">Thông tin</span>,
+              key: "2",
+              children: (
+                <div className="max-w-4xl mx-auto py-10">
+                  <h3 className="text-orange-500 font-bold mb-4">NỘI DUNG PHIM</h3>
+                  <p className="text-gray-300 leading-relaxed text-justify">{detail?.moTa}</p>
+                </div>
+              ),
+            },
+          ]}
+        />
+      </div>
+      <style>{`
+        .custom-movie-tabs .ant-tabs-nav::before { border-bottom: none; }
+        .custom-movie-tabs .ant-tabs-tab { color: #94a3b8 !important; transition: all 0.3s; }
+        .custom-movie-tabs .ant-tabs-tab-active .ant-tabs-tab-btn { color: #f97316 !important; transform: scale(1.1); }
+        .custom-movie-tabs .ant-tabs-ink-bar { background: #f97316 !important; height: 3px !important; }
+      `}</style>
     </div>
   );
 };
