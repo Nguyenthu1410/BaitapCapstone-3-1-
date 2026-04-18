@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 const SupportPage = () => {
-  // Dữ liệu giả cho trang hỗ trợ
   const supportData = {
     tieuDe: "Chúng tôi có thể giúp gì cho bạn?",
     danhMuc: [
