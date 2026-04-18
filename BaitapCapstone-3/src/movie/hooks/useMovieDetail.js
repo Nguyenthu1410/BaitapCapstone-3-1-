@@ -1,34 +1,45 @@
-import { useEffect, useState } from 'react';
-import { movieService } from '../services/movieService';
+import { useEffect, useState } from "react"
+import { movieService } from "../services/movieService";
 
-export const useMovieDetail = (movieId) => {
-  const [detail, setDetail] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+const useMovieDetail = (movieId) => {
+  const [data, setData] = useState({
+    movieInfo: null,
+    movieSchedule: null,
+    loading: true,
+    error: null,    
+  });
 
   useEffect(() => {
-    if (!movieId) {
-      setDetail(null);
-      setLoading(false);
-      return;
-    }
-
-    const fetchDetail = async () => {
+    const fetchData = async () => {
       try {
-        setLoading(true);
-        const res = await movieService.getMovieDetail(movieId);
-        setDetail(res.data.content);
+        const [resInfo, resSchedule] = await Promise.all([
+          movieService.getMovieSchedule(movieId),
+          movieService.getMovieDetail(movieId)
+        ]);
+
+        setData({
+          movieInfo: resInfo.data.content,
+          movieSchedule: resSchedule.data.content,
+          loading: false,
+          error: null,
+        });        
       } catch (error) {
-        console.error('Lỗi lấy chi tiết phim:', error);
-        setDetail(null);
-      } finally {
-        setLoading(false);
+        console.error('Error fetching movie data:', error);
+        setData(prev => ({
+          ...prev,
+          loading: false,
+          error:'Không thể lấy thông tin phim. Kiểm tra lại Token hoặc ID phim!'
+        }));
       }
     };
 
-    fetchDetail();
+    if (movieId) {
+      fetchMovieData();
+    }
   }, [movieId]);
-
-  return { detail, loading };
-};
+  
+  return data;
+}
 
 export default useMovieDetail;

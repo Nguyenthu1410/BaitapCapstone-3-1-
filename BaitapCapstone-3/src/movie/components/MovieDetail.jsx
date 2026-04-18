@@ -1,115 +1,145 @@
-// src/movie/components/MovieDetail.jsx
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import { useMovieDetail } from '../hooks/useMovieDetail';
-import { Spin, Rate, Button, Tag, message } from 'antd';
-import { PlayCircleOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
+import React, { useState, useMemo } from 'react';
 
-const MovieDetail = () => {
-  const { movieId } = useParams();
-  const { detail: movie, loading } = useMovieDetail(movieId);
-
-  const handleOpenTrailer = () => {
-    if (movie?.trailer) {
-      window.open(movie.trailer, '_blank');
-      return;
-    }
-    message.info('Trailer chưa có sẵn');
-  };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-slate-900">
-        <Spin size="large" tip="Đang tải thông tin phim..." />
-      </div>
-    );
+const dateUtils = {
+  getNext7Days: () => {
+    return [...Array(7)].map((_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      return d;
+    });
+  },
+  formatToCompare: (date) => {
+    const d = new Date(date);
+    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+  },
+  formatTime: (dateStr) => {
+    return new Date(dateStr).toLocaleTimeString('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+  },
+  getDayName: (date) => {
+    return new Intl.DateTimeFormat('vi-VN', { weekday: 'short' }).format(date);
   }
+};
 
-  if (!movie) {
-    return (
-      <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center px-6">
-        <div className="text-center">
-          <p className="text-2xl font-bold mb-4">Không tìm thấy thông tin phim</p>
-          <p className="text-gray-400">Vui lòng kiểm tra lại đường dẫn hoặc thử lại sau.</p>
-        </div>
-      </div>
-    );
-  }
+const MovieDetail = ({ movieInfo, movieSchedule }) => {
+  const [activeSystem, setActiveSystem] = useState(0);
+  const [activeDate, setActiveDate] = useState(dateUtils.formatToCompare(new Date()));
+  
+  const daysArr = useMemo(() => dateUtils.getNext7Days(), []);
+
+  if (!movieInfo || !movieSchedule) return null;
+
+  const currentSystem = movieSchedule.heThongRapChieu?.[activeSystem];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pt-28 pb-20">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col lg:flex-row gap-12">
-          {/* Cột 1: Hình ảnh phim */}
-          <div className="w-full lg:w-1/3 flex justify-center">
-            <div className="relative group w-full max-w-sm">
-              <img 
-                src={movie?.hinhAnh} 
-                alt={movie?.tenPhim} 
-                className="rounded-xl shadow-2xl border-2 border-slate-800 w-full object-cover h-125"
-              />
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                <Button
-                  type="primary"
-                  danger
-                  size="large"
-                  shape="round"
-                  icon={<PlayCircleOutlined />}
-                  onClick={handleOpenTrailer}
-                >
-                  XEM TRAILER
-                </Button>
-              </div>
+    <div className="bg-[#0a0a0a] min-h-screen text-white font-sans">
+      
+      <div 
+        className="relative py-20 px-6 bg-cover bg-center"
+        style={{ backgroundImage: `linear-gradient(to top, #0a0a0a, transparent), url(${movieInfo.hinhAnh})` }}
+      >
+        <div className="absolute inset-0 bg-black/70 backdrop-blur-md"></div>
+        <div className="relative z-10 container mx-auto flex flex-col md:flex-row gap-10 items-center">
+          <img src={movieInfo.hinhAnh} className="w-64 rounded shadow-2xl border border-gray-700" alt={movieInfo.tenPhim} />
+          <div className="space-y-4">
+            <h1 className="text-4xl font-bold uppercase tracking-tight">{movieInfo.tenPhim}</h1>
+            <p className="text-red-500 font-bold text-sm">C18 - PHIM DÀNH CHO KHÁN GIẢ TRÊN 18 TUỔI</p>
+            <p className="max-w-2xl text-gray-300 leading-relaxed line-clamp-3">{movieInfo.moTa}</p>
+            <div className="flex gap-4 pt-4">
+              <button className="bg-green-600 hover:bg-green-700 px-8 py-2 rounded font-bold uppercase text-xs transition shadow-lg">Xem Trailer</button>
+              <button className="bg-lime-500 hover:bg-lime-600 px-8 py-2 rounded font-bold uppercase text-xs text-black transition shadow-lg">Mua vé ngay</button>
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* Cột 2: Thông tin chi tiết */}
-          <div className="w-full lg:w-2/3 space-y-6">
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-wrap gap-2">
-                {movie?.dangChieu && <Tag color="green">Đang chiếu</Tag>}
-                {movie?.sapChieu && <Tag color="blue">Sắp chiếu</Tag>}
-                {movie?.hot && <Tag color="volcano">Phim hot</Tag>}
-              </div>
-              <h1 className="text-5xl font-black tracking-tighter uppercase text-orange-500">
-                {movie?.tenPhim}
-              </h1>
-              <p className="text-gray-400">Mã phim: {movie?.maPhim}</p>
-            </div>
-
-            <div className="flex items-center gap-6 py-4 border-y border-slate-800">
-              <div className="text-center">
-                <p className="text-gray-400 text-sm uppercase mb-1">Đánh giá</p>
-                <Rate disabled allowHalf defaultValue={movie?.danhGia / 2} />
-                <span className="ml-2 text-yellow-500 font-bold">{movie?.danhGia}/10</span>
-              </div>
-              <div className="h-10 w-px bg-slate-800"></div>
-              <div>
-                <p className="text-gray-400 text-sm uppercase mb-1">Khởi chiếu</p>
-                <p className="font-bold">{dayjs(movie?.ngayKhoiChieu).format('DD - MM - YYYY')}</p>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <h3 className="text-xl font-bold border-l-4 border-orange-500 pl-3">NỘI DUNG</h3>
-              <p className="text-gray-300 text-lg leading-relaxed italic">
-                {movie?.moTa || "Thông tin đang được cập nhật..."}
-              </p>
-            </div>
-
-            <div className="pt-6">
-              <Button
-                type="primary"
-                danger
-                size="large"
-                className="h-14 px-10 text-lg font-black uppercase tracking-widest"
-                onClick={() => window.location.href = `/checkout/${movie.maPhim}`}
+      <div className="container mx-auto py-12 px-4">
+        <div className="bg-white rounded-xl flex flex-col md:flex-row min-h-[600px] overflow-hidden shadow-2xl">
+          
+          <div className="w-full md:w-[80px] lg:w-[280px] bg-gray-50 border-r border-gray-200">
+            {movieSchedule.heThongRapChieu?.map((htr, index) => (
+              <div 
+                key={htr.maHeThongRap}
+                onClick={() => setActiveSystem(index)}
+                className={`flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-100 transition border-b ${
+                  activeSystem === index ? 'bg-white border-l-4 border-green-500' : 'opacity-40'
+                }`}
               >
-                Đặt Vé Ngay
-              </Button>
+                <img src={htr.logo} className="w-10 h-10" alt={htr.tenHeThongRap} />
+                <span className="hidden lg:block text-black font-bold text-xs uppercase">{htr.tenHeThongRap}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex-grow flex flex-col">
+            
+            <div className="flex border-b overflow-x-auto bg-gray-50 scrollbar-hide">
+              {daysArr.map((date, i) => {
+                const sDate = dateUtils.formatToCompare(date);
+                const isSelected = activeDate === sDate;
+                return (
+                  <div 
+                    key={i} 
+                    onClick={() => setActiveDate(sDate)}
+                    className={`p-4 min-w-[90px] text-center cursor-pointer transition relative ${
+                      isSelected ? 'text-red-600 font-bold' : 'text-gray-500'
+                    }`}
+                  >
+                    <p className="text-[10px] uppercase">{dateUtils.getDayName(date)}</p>
+                    <p className="text-2xl">{date.getDate()}</p>
+                    {isSelected && <div className="absolute bottom-0 left-0 w-full h-1 bg-red-600"></div>}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="p-6 overflow-y-auto max-h-[500px] text-black bg-white">
+              {currentSystem?.cumRapChieu?.map((cum) => {
+                const filteredLich = cum.lichChieuPhim?.filter(item => 
+                  dateUtils.formatToCompare(item.ngayChieuGioChieu) === activeDate
+                );
+
+                if (filteredLich?.length === 0) return null;
+
+                return (
+                  <div key={cum.maCumRap} className="mb-10 last:mb-0">
+                    <div className="flex gap-3 mb-5">
+                      <img src={currentSystem.logo} className="w-12 h-12 rounded shadow-md border" alt="" />
+                      <div>
+                        <h3 className="font-bold text-gray-800 text-lg leading-tight">{cum.tenCumRap}</h3>
+                        <p className="text-xs text-gray-400 italic">{cum.diaChi}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                      {filteredLich.map((lich) => (
+                        <button 
+                          key={lich.maLichChieu} 
+                          className="bg-gray-50 border border-gray-200 py-2 px-3 rounded hover:bg-green-50 hover:border-green-300 transition group"
+                        >
+                          <span className="text-green-600 font-bold text-xl block">
+                            {dateUtils.formatTime(lich.ngayChieuGioChieu)}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+              
+              {currentSystem?.cumRapChieu?.every(cum => 
+                !cum.lichChieuPhim?.some(item => dateUtils.formatToCompare(item.ngayChieuGioChieu) === activeDate)
+              ) && (
+                <div className="flex flex-col items-center justify-center py-20 text-gray-400 italic">
+                  <p>Không có suất chiếu cho ngày này.</p>
+                </div>
+              )}
             </div>
           </div>
+
         </div>
       </div>
     </div>
